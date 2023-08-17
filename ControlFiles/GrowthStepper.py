@@ -14,21 +14,14 @@ def get_parameters(f):
         time.sleep(1)
         return get_parameters(f) #this will recursively tunnel deeper until the problem is fixed. It will not record data
     #May be smart to install a better fail safe, but this is probably good enough for most users.
-
-
-StepsPerRev = 360/1.8*(204687/2057)*16 #200steps/rev*gear ratio*16microsteps
-timeout = 10000
-
-parameter_path = 'C:\\Users\\Contactless\\Desktop\\Stepper\\StepperParameters.txt'
-parameter_file = open(parameter_path, 'r')
         
-#Declare any event handlers here. These will be called every time the associated event occurs.
+#Event handlers: These will be called every time the associated event occurs.
 
 def onDigitalInput1_StateChange(self, state):
     #print("State [1]: " + str(state))
     pass
 
-def onDigitalInput2_StateChange(self, state):
+def onDigitalInput2_StateChange(self, state):#move up
     #print("State [2]: " + str(state))
     if not(state):
         stepper0.setEngaged(False)
@@ -39,7 +32,7 @@ def onDigitalInput2_StateChange(self, state):
             
         
 
-def onDigitalInput3_StateChange(self, state):
+def onDigitalInput3_StateChange(self, state):#move down
     #print("State [3]: " + str(state))
     if not(state):
         stepper0.setEngaged(False)
@@ -48,6 +41,18 @@ def onDigitalInput3_StateChange(self, state):
         stepper0.setTargetPosition(-3000000)
         stepper0.setEngaged(True)
 
+#define speed and length for scan
+StepsPerRev = 360/1.8*(204687/2057)*16 #200steps/rev*gear ratio*16microsteps
+#318,424.113
+cmperRev = 5.735
+onecm = StepsPerRev/cmperRev #this is the steps per 1 cm of motion (value is 55,522.949)
+l = 28 #desired movement length in cm
+v = onecm*l/(3600*12) #steps per sec
+timeout = 10000
+wait_time = 50#hr
+
+parameter_path = 'C:\\Users\\Contactless\\Desktop\\Stepper\\StepperParameters.txt'
+parameter_file = open(parameter_path, 'r')
 
     #Create your Phidget channels
 stepper0 = Stepper()
@@ -65,56 +70,25 @@ digitalInput2.setOnStateChangeHandler(onDigitalInput2_StateChange)
 digitalInput3.setOnStateChangeHandler(onDigitalInput3_StateChange)
 
     #Open your Phidgets and wait for attachment
-stepper0.openWaitForAttachment(5000)
-digitalInput1.openWaitForAttachment(5000)
-digitalInput2.openWaitForAttachment(5000)
-digitalInput3.openWaitForAttachment(5000)
+stepper0.openWaitForAttachment(timeout)
+digitalInput1.openWaitForAttachment(timeout)
+digitalInput2.openWaitForAttachment(timeout)
+digitalInput3.openWaitForAttachment(timeout)
 
-    #Do stuff with your Phidgets here or in your event handlers.
-    # stepper0.setTargetPosition(int(StepsPerRev))
-    # stepper0.setEngaged(True)
-    # while stepper0.getTargetPosition() != stepper0.getPosition():
-    #     speed,_ = get_parameters(parameter_file)
-    #     stepper0.setVelocityLimit(int(speed))
-    #     #get_parameters
-    # time.sleep(3)
-    # stepper0.addPositionOffset(int(StepsPerRev))
-    # stepper0.setTargetPosition(0) #this zeros the position
-    # while stepper0.getTargetPosition() != stepper0.getPosition():
-    #     speed,_ = get_parameters(parameter_file)
-    #     stepper0.setVelocityLimit(int(speed))
-    
-#set up
-onecm = StepsPerRev/5.65
+#wait for heating up
+stepper0.setEngaged(False)
+time.sleep(wait_time*60)
+
+#start scan
+stepper0.addPositionOffset(-stepper0.getPosition())#sets current position to zero
+stepper0.setControlMode(StepperControlMode.CONTROL_MODE_RUN)
 stepper0.setEngaged(True)
-stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP)
+stepper0.setCurrentLimit(1)#Amp
 stepper0.setDataRate(100)#Hz
-stepper0.addPositionOffset(-stepper0.getPosition())
-#for n in range(30):
-#    print('Step',n)
-#    stepper0.addPositionOffset(-stepper0.getPosition())
-#    stepper0.setTargetPosition(onecm)
-    #print(stepper0.getTargetPosition(), stepper0.getPosition())
-#    while stepper0.getTargetPosition() != stepper0.getPosition():
-#        if digitalInput2.getState() and digitalInput3.getState():
-#            break
-#        speed,_ = get_parameters(parameter_file)
-#        print(stepper0.getTargetPosition(), stepper0.getPosition(),stepper0.getRescaleFactor())
-#        stepper0.setVelocityLimit(int(speed))
-#        time.sleep(.1)
-#    if digitalInput2.getState() and digitalInput3.getState():
-#        break
-#    time.sleep(1)
-l = 20
-stepper0.setTargetPosition(l*onecm)
+print('Target Steps =',int(l*onecm))
+stepper0.setVelocityLimit(v)
 
-v = onecm*30/(3600*2)
-print(v)
-stepper0.setVelocityLimit(10000)
-while stepper0.getTargetPosition() != stepper0.getPosition():
-    if digitalInput2.getState() and digitalInput3.getState():
-        break
-    print(stepper0.getPosition()/(l*onecm))
+while stepper0.getPosition()< int(l*onecm) and not(digitalInput2.getState() and digitalInput3.getState()):
     time.sleep(1)
 print('Done')
 print('Traveled: ',stepper0.getPosition())
@@ -123,8 +97,11 @@ print('Traveled: ',stepper0.getPosition())
 while not(digitalInput2.getState() and digitalInput3.getState()):
     speed,_ = get_parameters(parameter_file)
     stepper0.setVelocityLimit(int(speed))
-#Close your Phidgets once the program is done.
+    
+#Close your Phidgets and files once the program is done.
 stepper0.close()
 digitalInput1.close()
 digitalInput2.close()
 digitalInput3.close()
+print('Stepper Closed')
+parameter_file.close()
