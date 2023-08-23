@@ -1,2 +1,2 @@
-MaxSpeed: 4000 [1-32768]
+MaxSpeed: 10000 [1-32768]
 Something: 1
