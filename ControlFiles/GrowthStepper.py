@@ -55,7 +55,7 @@ v =-2
 wait_time = 11#hr
 wait_time = 5/3600#hr
 
-parameter_path = 'C:\\Users\\Contactless\\Desktop\\Stepper\\StepperParameters.txt'
+parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
 
     #Create your Phidget channels
