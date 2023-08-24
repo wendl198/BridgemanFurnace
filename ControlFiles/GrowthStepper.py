@@ -55,7 +55,7 @@ v =-2
 wait_time = 11#hr
 wait_time = 5/3600#hr
 
-parameter_path = 'StepperParameters.txt'
+parameter_path = 'C:\\Users\\Contactless\\Desktop\\Stepper\\StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
 
     #Create your Phidget channels
@@ -91,7 +91,7 @@ offset = 0
 stepper0.setVelocityLimit(int(speed))
 stepper0.setEngaged(True)
 stepper0.addPositionOffset(-stepper0.getPosition())#sets current position to zero
-while (stepper0.getPosition()-offset)< abs(int(h0*onecm))or reset:
+while False and (stepper0.getPosition()-offset)< abs(int(h0*onecm))or reset:
     if reset:
         offset = stepper0.getPosition()
         reset =False
@@ -113,9 +113,10 @@ offset = 0
 #this gives a measured rate of 8/16 steps per sec
 stepper0.setEngaged(True)
 stepper0.setVelocityLimit(0)
-stepper0.addPositionOffset(-stepper0.getPosition()-offset) #
-while (abs(stepper0.getPosition()-offset)< abs(int((h1-h0)*onecm)) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
-    #print(stepper0.getPosition())
+stepper0.addPositionOffset(-stepper0.getPosition()-80) #
+v_slow = -5
+while (stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+    print(stepper0.getPosition())
     
     if reset:
         #offset = stepper0.getPosition()
@@ -127,14 +128,19 @@ while (abs(stepper0.getPosition()-offset)< abs(int((h1-h0)*onecm)) or reset) and
         #pold = 0
 
     desired_p = int((time.perf_counter()-t0)*v)
+    stepper0.setVelocityLimit(v_slow)
     while abs(stepper0.getPosition())<abs(desired_p):
-        stepper0.setVelocityLimit(-5)
-        time.sleep(1/9)
+        
+        time.sleep(.1)
+    if stepper0.getPosition()!= desired_p:
+        print('Not Moving')
+        #v_slow -=1
     stepper0.setVelocityLimit(0)
+    time.sleep(1)
     #p= stepper0.getPosition()
     #print(str(round(p/int((h1-h0)*onecm)*100,4))+'%')
     #print(stepper0.getPosition()/(time.perf_counter()-t0))
-    time.sleep(1)
+    
     #t2 = time.perf_counter()
     #print(p,(p-pold)/(t2-t),t2-t)
     #t = t2
