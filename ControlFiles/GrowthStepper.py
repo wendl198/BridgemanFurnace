@@ -15,40 +15,18 @@ def get_parameters(f):
         time.sleep(1)
         return get_parameters(f) #this will recursively tunnel deeper until the problem is fixed. It will not record data
     #May be smart to install a better fail safe, but this is probably good enough for most users.
-        
-#Event handlers: These will be called every time the associated event occurs.
 
-def onDigitalInput1_StateChange(self, state):
-    #print("State [1]: " + str(state))
-    pass
-
-def onDigitalInput2_StateChange(self, state):
-    #print("State [2]: " + str(state))
-    if not(state):
-        stepper0.setVelocityLimit(0)
-    elif not(digitalInput3.getState()):
-        speed,_ = get_parameters(parameter_file)
-        stepper0.setVelocityLimit(int(speed))  
-
-def onDigitalInput3_StateChange(self, state):
-    #print("State [3]: " + str(state))
-    if not(state):
-        stepper0.setVelocityLimit(0)
-    elif not(digitalInput2.getState()):
-        speed,_ = get_parameters(parameter_file)
-        stepper0.setVelocityLimit(-int(speed))
 
 #stepper control parameters (do not change)
-StepsPerRev = 360/1.8*(204687/2057)*16 #200steps/rev*gear ratio*16microsteps
-#318,424.113
+StepsPerRev = 360/1.8*(204687/2057)*16 #200steps/rev*gear ratio*16microsteps #318,424.113
 cmperRev = 5.735
 onecm = StepsPerRev/cmperRev #this is the steps per 1 cm of motion (value is 55,522.949)
 timeout = 5000 #for connecting to motor controller (ms)
 
 #define speed and length for scan (change)
 #assuming bottom of tube is at the bottom of the furnace
-h0 = 18 #intial height above the bottom
-h1 = 15.5 #final height above bottom (negative means out of furnace
+h0 = 2 #intial height above the bottom
+h1 = h0-2.5 #final height above bottom (negative means out of furnace
 v = onecm*(h1-h0)/(3600*90) #steps per sec
 v =-2
 #v = -10000
@@ -68,10 +46,6 @@ digitalInput3 = DigitalInput()
 digitalInput1.setChannel(1)
 digitalInput2.setChannel(2)
 digitalInput3.setChannel(3)
-#Assign any event handlers you need before calling open so that no events are missed.
-digitalInput1.setOnStateChangeHandler(onDigitalInput1_StateChange)
-digitalInput2.setOnStateChangeHandler(onDigitalInput2_StateChange)
-digitalInput3.setOnStateChangeHandler(onDigitalInput3_StateChange)
 
 #Open your Phidgets and wait for attachment
 stepper0.openWaitForAttachment(timeout)
@@ -81,74 +55,49 @@ digitalInput3.openWaitForAttachment(timeout)
 
 
 #start scan
-stepper0.setControlMode(StepperControlMode.CONTROL_MODE_RUN)
+stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP)
 stepper0.setCurrentLimit(2)#Amp
 stepper0.setDataRate(100)#Hz
 speed,_ = get_parameters(parameter_file)
-print('Starting Intial posisiton',stepper0.getPosition())
-reset = True
-offset = 0
+stepper0.setTargetPosition(0)
 stepper0.setVelocityLimit(int(speed))
 stepper0.setEngaged(True)
-stepper0.addPositionOffset(-stepper0.getPosition())#sets current position to zero
-while False and (stepper0.getPosition()-offset)< abs(int(h0*onecm))or reset:
-    if reset:
-        offset = stepper0.getPosition()
-        reset =False
-        if offset != 0:
-            print('Something Weird is still happening')
-    print(str(round((stepper0.getPosition()-offset)/int(h0*onecm)*100,1))+'%')
+stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current position to zero
+print('Starting Intial posisiton',pos)
+target = int(h0*onecm)
+stepper0.setTargetPosition(target)
+while (pos := stepper0.getPosition())< target:
+    print(str(round((pos)/int(h0*onecm)*100,1))+'%')
     time.sleep(1)
 stepper0.setEngaged(False)
 print('Top posisiton',stepper0.getPosition()/onecm)
 print('Waiting for heating')
 #wait for heating up
 time.sleep(wait_time*3600)
-stepper0.setAcceleration(4000)
+stepper0.setAcceleration(4000)#slowest acceleration
 print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
-offset = 0
-#this gives a measured rate of 8/16 steps per sec
-stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP)
-stepper0.setTargetPosition(0)
+stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(5)
+stepper0.setVelocityLimit(5)#this gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
-
 while ((pos := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     print(pos)
-    
-# while (stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
-    stepper0.setTargetPosition(int((h1-h0)*onecm))
     if reset:
         reset =False
         t0 = time.perf_counter()
-
-    stepper0.setTargetPosition(tar:=int((time.perf_counter()-t0)*v))
-    while stepper0.getPosition()<tar:
+    stepper0.setTargetPosition(target:=int((time.perf_counter()-t0)*v))
+    while stepper0.getPosition()<target:
          time.sleep(.1)
-#     if stepper0.getPosition()!= desired_p:
-#         print('Not Moving')
-#         #v_slow -=1
-#     stepper0.setVelocityLimit(0)
     time.sleep(1)
-    #p= stepper0.getPosition()
-    #print(str(round(p/int((h1-h0)*onecm)*100,4))+'%')
-    #print(stepper0.getPosition()/(time.perf_counter()-t0))
     
-    #t2 = time.perf_counter()
-    #print(p,(p-pold)/(t2-t),t2-t)
-    #t = t2
-    #pold = p
+stepper0.setEngaged(False)    
 print('Done')
 print('Traveled: ',str(stepper0.getPosition()/onecm)+'cm in',str((time.perf_counter-t0)/3600)+'hours')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
-stepper0.setEngaged(False)
-#while not(digitalInput2.getState() and digitalInput3.getState()): #failsafe 
-    #time.sleep(1)
 
 #Close your Phidgets and files once the program is done.
 stepper0.close()
