@@ -1,0 +1,12 @@
+bash test.sh
+python3 scrpt.py
+
+nano file
+which bash
+chmod u+x test.sh
+
+mv: move/rename
+rm: remove
+cp: copy
+scp: secure copy (ssh copy)
+man thingthatyouarecuriousabout
