@@ -22,7 +22,7 @@ tmux a (type this is ssh terminal to attach tmux window that is already started)
 tmux detach hot key "ctl b" then let go and press "d"
 
 Now in the tmux shell navigate to the control file directory with command:
-cd BridgemanFurnace/ControlFiles/
+cd BridgemanFurnace/ControlFiles
 This is a git repository that can be used to update the files that you want to run. I highly recommend that you do not try to commit/upload anything from the pi because it is annoying, but its is very convienient for one to update the github repo and want to update the pi with the changes, by using:
 git pull 
 (while you are in the relavent path from above)
