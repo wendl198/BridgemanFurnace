@@ -111,32 +111,37 @@ print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
 offset = 0
 #this gives a measured rate of 8/16 steps per sec
+stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP)
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(0)
+stepper0.setVelocityLimit(2)
 stepper0.addPositionOffset(-stepper0.getPosition()-80) #
-v_slow = -5
-while (stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
-    print(stepper0.getPosition())
-    
-    if reset:
-        #offset = stepper0.getPosition()
-        #offset = 0 
-        reset =False
-        #if offset != 0:
-            #print('Something Weird is still happening')
-        t0 = time.perf_counter()
-        #pold = 0
-
-    desired_p = int((time.perf_counter()-t0)*v)
-    stepper0.setVelocityLimit(v_slow)
-    while abs(stepper0.getPosition())<abs(desired_p):
-        
-        time.sleep(.1)
-    if stepper0.getPosition()!= desired_p:
-        print('Not Moving')
-        #v_slow -=1
-    stepper0.setVelocityLimit(0)
+# v_slow = -5
+stepper0.setTargetPosition(int((h1-h0)*onecm))
+while (p := stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+    print(p)
     time.sleep(1)
+# while (stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+#     print(stepper0.getPosition())
+    
+#     if reset:
+#         #offset = stepper0.getPosition()
+#         #offset = 0 
+#         reset =False
+#         #if offset != 0:
+#             #print('Something Weird is still happening')
+#         t0 = time.perf_counter()
+#         #pold = 0
+
+#     stepper0.setTargetPosition(int((time.perf_counter()-t0)*stepper0.getVelocityLimit()))
+#     # stepper0.setVelocityLimit(v_slow)
+#     while abs(stepper0.getPosition())<abs(desired_p):
+        
+#         time.sleep(.1)
+#     if stepper0.getPosition()!= desired_p:
+#         print('Not Moving')
+#         #v_slow -=1
+#     stepper0.setVelocityLimit(0)
+#     time.sleep(1)
     #p= stepper0.getPosition()
     #print(str(round(p/int((h1-h0)*onecm)*100,4))+'%')
     #print(stepper0.getPosition()/(time.perf_counter()-t0))
