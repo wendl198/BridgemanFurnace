@@ -12,7 +12,7 @@ Username: blake
 Password: hg1201
 
 On windows, one can use a powershell (same command on macOS and linux) with the following command:
-ssh blake@pi.local
+ssh blake@pi
 
 You now have a direct connection to control the pi. The SSH connection will stop running any control scrips if you close the SSH connection. To allow for network disconnections (so you can take your laptop home), the next step is to set up tmux. Into the SSH terminal type:
 tmux
