@@ -117,7 +117,7 @@ stepper0.setVelocityLimit(2)
 stepper0.addPositionOffset(-stepper0.getPosition()-80) #
 # v_slow = -5
 stepper0.setTargetPosition(int((h1-h0)*onecm))
-while (p := stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+while ((p := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     print(p)
     time.sleep(1)
 # while (stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
