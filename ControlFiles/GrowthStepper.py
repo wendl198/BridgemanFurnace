@@ -127,8 +127,7 @@ while ((pos := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(di
         t0 = time.perf_counter()
 
     stepper0.setTargetPosition(tar:=int((time.perf_counter()-t0)*v))
-#     while stepper0.getPosition()<tar:
-        
+    while stepper0.getPosition()<tar:
          time.sleep(.1)
 #     if stepper0.getPosition()!= desired_p:
 #         print('Not Moving')
