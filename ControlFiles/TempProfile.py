@@ -47,11 +47,11 @@ v = onecm*l/(3600*12) #16 steps per sec
 timeout = 10000
 
 #file handling
-parameter_path = 'C:\\Users\\Contactless\\Desktop\\Stepper\\StepperParameters.txt'
+parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
 now = datetime.now()
 dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")#get unique name
-save_path = 'C:\\Users\\Contactless\\Desktop\\Stepper\\RawData'
+save_path = '../RawData'
 save_file = open(save_path +'\\Stepper'+dt_string+'.dat', "a")#leave file open
 save_file.write("Time (min)" + "\t" + 'Position(1/16 steps)'+"\n")#set header
 
