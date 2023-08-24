@@ -41,7 +41,7 @@ def onDigitalInput3_StateChange(self, state):
 
 timeout = 10000
 
-parameter_path = 'C:\\Users\\Contactless\\Desktop\\Stepper\\StepperParameters.txt'
+parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
 
 #Create your Phidget channels
