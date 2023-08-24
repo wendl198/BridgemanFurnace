@@ -113,7 +113,7 @@ offset = 0
 #this gives a measured rate of 8/16 steps per sec
 stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP)
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(2)
+stepper0.setVelocityLimit(-5)
 stepper0.addPositionOffset(-stepper0.getPosition()-80) #
 # v_slow = -5
 stepper0.setTargetPosition(int((h1-h0)*onecm))
