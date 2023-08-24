@@ -1,24 +1,34 @@
-sudo apt-get install python3.9
-sudo apt-get install git
-sudo apt-get install python3-pip
-sudo pip install Phidget22
-curl -fsSL https://www.phidgets.com/downloads/setup_linux | sudo -E bash - &&sudo apt-get install -y libphidget22
-git clone https://github.com/wendl198/BridgemanFurnace/
+The easiest way to connect to the raspberrypi is an SSH connection. eduroam wifi makes it a little tricky. In order to ensure a static IP address, one can use the hotspot from a laptop or phone that provides a static intermediary between eduroam and the pi.
 
-tmux (create new shel that runs indivially from SSH)
+If you need to set up the pi (or reset), see the SetupPi.sh shell script file and SetupPi.txt.
+
+The pi is configured to look for a network with the following properties:
+SSID (Network Name): StepperWifi
+Password: mercury1201
+
+Other pi configuration properties:
+Hostname: pi.local
+Username: blake
+Password: hg1201
+
+On windows, one can use a powershell (same command on macOS and linux) with the following command:
+ssh blake@pi.local
+
+You now have a direct connection to control the pi. The SSH connection will stop running the control scrips if you close the SSH connection. To allow for disconnections, the next step is to set up tmux.
+
+tmux (create new shell that runs indivially from SSH)
 tmux a (attach)
 tmux detach hot key "ctl b", "d"
 
 bash test.sh
 python3 scrpt.py
 git pull
-git clone https://github.com/wendl198/BridgemanFurnace/
 
 nano file
 which bash
 chmod u+x test.sh
 
-mv: move/renaem
+mv: move/rename
 rm: remove
 cp: copy
 scp: secure copy (ssh copy)
