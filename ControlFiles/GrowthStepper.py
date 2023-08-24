@@ -81,7 +81,7 @@ print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(5)#this gives a measured rate of 8/16 steps per sec
+stepper0.setVelocityLimit(max(5,abs(v)))#this gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
 while ((pos := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     # print(pos)
