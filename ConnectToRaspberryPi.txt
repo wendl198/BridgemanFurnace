@@ -1,0 +1,25 @@
+sudo apt-get install python3.9
+sudo apt-get install git
+sudo apt-get install python3-pip
+sudo pip install Phidget22
+curl -fsSL https://www.phidgets.com/downloads/setup_linux | sudo -E bash - &&sudo apt-get install -y libphidget22
+git clone https://github.com/wendl198/BridgemanFurnace/
+
+tmux (create new shel that runs indivially from SSH)
+tmux a (attach)
+tmux detach hot key "ctl b", "d"
+
+bash test.sh
+python3 scrpt.py
+git pull
+git clone https://github.com/wendl198/BridgemanFurnace/
+
+nano file
+which bash
+chmod u+x test.sh
+
+mv: move/renaem
+rm: remove
+cp: copy
+scp: secure copy (ssh copy)
+man thingthatyouarecuriousabout
