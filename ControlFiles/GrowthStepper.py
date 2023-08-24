@@ -112,36 +112,29 @@ reset = True
 offset = 0
 #this gives a measured rate of 8/16 steps per sec
 stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP)
+stepper0.setTargetPosition(0)
 stepper0.setEngaged(True)
 stepper0.setVelocityLimit(5)
-stepper0.addPositionOffset(-stepper0.getPosition()-80) #
-# v_slow = -5
-stepper0.setTargetPosition(int((h1-h0)*onecm))
-while ((p := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
-    print(p)
-    time.sleep(1)
-# while (stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
-#     print(stepper0.getPosition())
-    
-#     if reset:
-#         #offset = stepper0.getPosition()
-#         #offset = 0 
-#         reset =False
-#         #if offset != 0:
-#             #print('Something Weird is still happening')
-#         t0 = time.perf_counter()
-#         #pold = 0
+stepper0.addPositionOffset(-stepper0.getPosition()) 
 
-#     stepper0.setTargetPosition(int((time.perf_counter()-t0)*stepper0.getVelocityLimit()))
-#     # stepper0.setVelocityLimit(v_slow)
-#     while abs(stepper0.getPosition())<abs(desired_p):
+while ((pos := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+    print(pos)
+    
+# while (stepper0.getPosition() > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+    stepper0.setTargetPosition(int((h1-h0)*onecm))
+    if reset:
+        reset =False
+        t0 = time.perf_counter()
+
+    stepper0.setTargetPosition(tar:=int((time.perf_counter()-t0)*v))
+#     while stepper0.getPosition()<tar:
         
-#         time.sleep(.1)
+         time.sleep(.1)
 #     if stepper0.getPosition()!= desired_p:
 #         print('Not Moving')
 #         #v_slow -=1
 #     stepper0.setVelocityLimit(0)
-#     time.sleep(1)
+    time.sleep(1)
     #p= stepper0.getPosition()
     #print(str(round(p/int((h1-h0)*onecm)*100,4))+'%')
     #print(stepper0.getPosition()/(time.perf_counter()-t0))
