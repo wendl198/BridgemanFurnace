@@ -14,16 +14,18 @@ Password: hg1201
 On windows, one can use a powershell (same command on macOS and linux) with the following command:
 ssh blake@pi.local
 
-You now have a direct connection to control the pi. The SSH connection will stop running the control scrips if you close the SSH connection. To allow for disconnections, the next step is to set up tmux. Into the ssh type:
+You now have a direct connection to control the pi. The SSH connection will stop running any control scrips if you close the SSH connection. To allow for network disconnections (so you can take your laptop home), the next step is to set up tmux. Into the SSH terminal type:
 tmux
-This creates new shell that runs indepentantly from SSH, so you can connect and disconnect (attach and detach) while any process remains running with the commands:
+
+This creates new shell that runs indepentantly from SSH, so you can connect/disconnect (attach/detach) while any process remains running with the commands:
 tmux a (type this is ssh terminal to attach tmux window that is already started)
 tmux detach hot key "ctl b" then let go and press "d"
 
 Now in the tmux shell navigate to the control file directory with command:
-cd /BridgemanFurnace/ControlFiles/
-This is a git repository that can be used to update the files that you want to run. I highly recommend that you do not try to commit/upload anything from the pi because it is annoying, but if you update the github repo and want to update the pi with the changes, use:
-git pull
+cd BridgemanFurnace/ControlFiles/
+This is a git repository that can be used to update the files that you want to run. I highly recommend that you do not try to commit/upload anything from the pi because it is annoying, but its is very convienient for one to update the github repo and want to update the pi with the changes, by using:
+git pull 
+(while you are in the relavent path from above)
 
 Now you should be able to run the newest version of your script e.g.:
 python3 GrowthStepper.py
