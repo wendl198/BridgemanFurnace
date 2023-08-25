@@ -19,7 +19,10 @@ tmux
 
 This creates new shell that runs indepentantly from SSH, so you can connect/disconnect (attach/detach) while any process remains running with the commands:
 tmux a (type this is ssh terminal to attach tmux window that is already started)
-tmux detach hot key "ctl b" then let go and press "d"
+
+While in tmux, you can detach the from the window with the hot key "ctl b" then let go and press "d"
+Similarly, one can kill tmux window with "ctl b" then &
+
 
 Now in the tmux shell navigate to the control file directory with command:
 cd BridgemanFurnace/ControlFiles
