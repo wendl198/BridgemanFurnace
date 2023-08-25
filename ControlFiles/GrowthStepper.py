@@ -80,7 +80,7 @@ print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
-final_target = int((h1-h0)*onecm) #should be positive for lowering
+final_target = abs(int((h1-h0)*onecm)) #should be positive for lowering
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
 stepper0.setVelocityLimit(max(5,int(abs(v)+1))#this gives a measured rate of 8/16 steps per sec
