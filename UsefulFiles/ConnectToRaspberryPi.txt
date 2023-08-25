@@ -32,3 +32,4 @@ git pull
 
 Now you should be able to run the newest version of your script e.g.:
 python3 GrowthStepper.py
+
