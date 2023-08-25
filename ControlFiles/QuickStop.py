@@ -28,7 +28,7 @@ def onDigitalInput2_StateChange(self, state):
     elif not(digitalInput3.getState()):
         speed,_ = get_parameters(parameter_file)
         stepper0.setVelocityLimit(int(speed))
-    #print(stepper0.getVelocityLimit())
+    print(stepper0.getVelocityLimit())
             
 def onDigitalInput3_StateChange(self, state):
     #print("State [3]: " + str(state))
@@ -37,7 +37,7 @@ def onDigitalInput3_StateChange(self, state):
     elif not(digitalInput2.getState()):
         speed,_ = get_parameters(parameter_file)
         stepper0.setVelocityLimit(-int(speed))
-    #print(stepper0.getVelocityLimit())
+    print(stepper0.getVelocityLimit())
 
 timeout = 10000
 
