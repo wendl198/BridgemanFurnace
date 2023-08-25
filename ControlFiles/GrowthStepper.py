@@ -25,7 +25,7 @@ timeout = 5000 #for connecting to motor controller (ms)
 
 #define speed and length for scan (change)
 #assuming bottom of tube is at the bottom of the furnace
-h0 = 18 #intial height above the bottom
+h0 = 0 #intial height above the bottom
 h1 = h0-12 #final height above bottom (negative means out of furnace
 v = onecm*(h1-h0)/(3600*60) #steps per sec
 #up is negative values
