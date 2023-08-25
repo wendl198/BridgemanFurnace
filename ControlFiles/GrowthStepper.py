@@ -25,13 +25,11 @@ timeout = 5000 #for connecting to motor controller (ms)
 
 #define speed and length for scan (change)
 #assuming bottom of tube is at the bottom of the furnace
-h0 = 0 #intial height above the bottom
-h1 = h0-2.5 #final height above bottom (negative means out of furnace
-v = onecm*(h1-h0)/(3600*90) #steps per sec
-v =-2
-#v = -10000
+h0 = 18 #intial height above the bottom
+h1 = h0-12 #final height above bottom (negative means out of furnace
+v = onecm*(h1-h0)/(3600*60) #steps per sec
 wait_time = 11#hr
-wait_time = 5/3600#hr
+# wait_time = 5/3600#hr
 
 parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
@@ -66,6 +64,7 @@ stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current positio
 print('Starting Intial posisiton',pos)
 target = int(h0*onecm)
 stepper0.setTargetPosition(target)
+
 while (pos := stepper0.getPosition())< target:
     print(str(round((pos)/int(h0*onecm)*100,1))+'%')
     time.sleep(1)
