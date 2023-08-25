@@ -67,7 +67,7 @@ print('Starting Intial posisiton',pos)
 target = -abs(int(h0*onecm))#want to move up so negative height
 stepper0.setTargetPosition(target)
 
-while (pos := stepper0.getPosition())< target:
+while (pos := stepper0.getPosition())> target:
     print(str(round((pos)/int(h0*onecm)*100,1))+'%')
     time.sleep(1)
 stepper0.setEngaged(False)
@@ -84,7 +84,7 @@ stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
 stepper0.setVelocityLimit(max(5,abs(v)))#this gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
-while ((pos := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+while ((pos := stepper0.getPosition()) < int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     # print(pos)
     if reset:
         reset =False
