@@ -25,7 +25,7 @@ timeout = 5000 #for connecting to motor controller (ms)
 
 #define speed and length for scan (change)
 #assuming bottom of tube is at the bottom of the furnace
-h0 = 0 #intial height above the bottom
+h0 = 18 #intial height above the bottom
 h1 = h0-12 #final height above bottom (negative means out of furnace
 v = onecm*(h1-h0)/(3600*60) #steps per sec
 #up is negative values
@@ -80,18 +80,18 @@ print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
-final_target = abs(int((h1-h0)*onecm)) #should be positive for lowering
+target = abs(int((h1-h0)*onecm)) #should be positive for lowering
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
 stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#this gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
 #start lowering from intial height                       
-while ((pos := stepper0.getPosition()) < final_target or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+while ((pos := stepper0.getPosition()) < target or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     # print(pos)
     if reset:
         reset =False
         t0 = time.perf_counter()
-    stepper0.setTargetPosition(target:=abs(int((time.perf_counter()-t0)*v)))#use absolute value to ensure positive thus down
+    stepper0.setTargetPosition(abs(int((time.perf_counter()-t0)*v)))#use absolute value to ensure positive thus down
     time.sleep(1)
     
 stepper0.setEngaged(False)    
