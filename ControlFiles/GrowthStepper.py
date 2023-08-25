@@ -83,7 +83,7 @@ reset = True
 final_target = abs(int((h1-h0)*onecm)) #should be positive for lowering
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(max(5,int(abs(v)+1))#this gives a measured rate of 8/16 steps per sec
+stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#this gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
 #start lowering from intial height                       
 while ((pos := stepper0.getPosition()) < final_target or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
