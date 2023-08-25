@@ -28,6 +28,8 @@ timeout = 5000 #for connecting to motor controller (ms)
 h0 = 18 #intial height above the bottom
 h1 = h0-12 #final height above bottom (negative means out of furnace
 v = onecm*(h1-h0)/(3600*60) #steps per sec
+#up is negative values
+#down is positive values
 wait_time = 11#hr
 # wait_time = 5/3600#hr
 
@@ -62,7 +64,7 @@ stepper0.setVelocityLimit(int(speed))
 stepper0.setEngaged(True)
 stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current position to zero
 print('Starting Intial posisiton',pos)
-target = int(h0*onecm)
+target = -abs(int(h0*onecm))#want to move up so negative height
 stepper0.setTargetPosition(target)
 
 while (pos := stepper0.getPosition())< target:
@@ -87,14 +89,14 @@ while ((pos := stepper0.getPosition()) > int((h1-h0)*onecm) or reset) and not(di
     if reset:
         reset =False
         t0 = time.perf_counter()
-    stepper0.setTargetPosition(target:=int((time.perf_counter()-t0)*v))
+    stepper0.setTargetPosition(target:=abs(int((time.perf_counter()-t0)*v)))#use absolute value to ensure positive thus down
     while stepper0.getPosition()<target:
          time.sleep(.1)
     time.sleep(1)
     
 stepper0.setEngaged(False)    
 print('Done')
-print('Traveled: ',str(stepper0.getPosition()/onecm)+'cm in',str((time.perf_counter-t0)/3600)+'hours')
+print('Traveled: ',str(stepper0.getPosition()/onecm)+'cm in',str((time.perf_counter()-t0)/3600)+'hours')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 
