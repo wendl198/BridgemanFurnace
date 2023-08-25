@@ -66,32 +66,32 @@ stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current positio
 print('Starting Intial posisiton',pos)
 target = -abs(int(h0*onecm))#want to move up so negative height
 stepper0.setTargetPosition(target)
-
+#start lifting to intial height
 while (pos := stepper0.getPosition())> target:
     print(str(round((pos)/int(h0*onecm)*100,1))+'%')
     time.sleep(1)
+    
 stepper0.setEngaged(False)
 print('Top posisiton',stepper0.getPosition()/onecm)
-print('Waiting for heating')
-#wait for heating up
+print('Waiting for heating')#wait for heating up
 time.sleep(wait_time*3600)
 stepper0.setAcceleration(4000)#slowest acceleration
 print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
+final_target = int((h1-h0)*onecm) #should be positive for lowering
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(max(5,abs(v)))#this gives a measured rate of 8/16 steps per sec
+stepper0.setVelocityLimit(max(5,int(abs(v)+1))#this gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
-while ((pos := stepper0.getPosition()) < int((h1-h0)*onecm) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
+#start lowering from intial height                       
+while ((pos := stepper0.getPosition()) < final_target or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     # print(pos)
     if reset:
         reset =False
         t0 = time.perf_counter()
     stepper0.setTargetPosition(target:=abs(int((time.perf_counter()-t0)*v)))#use absolute value to ensure positive thus down
-    while stepper0.getPosition()<target:
-         time.sleep(.1)
     time.sleep(1)
     
 stepper0.setEngaged(False)    
