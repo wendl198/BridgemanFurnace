@@ -17,4 +17,6 @@ There are two buttons attached to the stepper controller board. The button close
 
 The temperature profile of the furance for the set point 1020C was measured 8/16/23 and can be found in the TempProfile folder. After getting sick of manual temperature data entry, I wrote a script that takes video of the thermocouple reader and logs the temperature as a function of time. This script can also be found in the TempProfile folder.
 
-When running the stepper motor, there are two modes: step and run (toggled with stepper0.setControlMode(StepperControlMode.CONTROL_MODE_RUN) and stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP). Run mode allows you to give a velocity that tell the motor the speed in which it should run (positive is up negative is down). Step mode is the default and allows you to set a terget position and the motor will automatically move there. I have had significant trouble with step mode not actually moving upon startup, so I highly recommend you use run mode. 
+When running the stepper motor, there are two modes: step and run (toggled with stepper0.setControlMode(StepperControlMode.CONTROL_MODE_RUN) and stepper0.setControlMode(StepperControlMode.CONTROL_MODE_STEP). Run mode allows you to give a velocity that tell the motor the speed in which it should run (positive is up negative is down). Step mode is the default and allows you to set a terget position and the motor will automatically move there.
+
+The stepper motor is currently run by a raspberry pi. Contecting to and setting up the pi is explained in the UsefulFiles folder.
