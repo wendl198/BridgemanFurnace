@@ -27,11 +27,11 @@ timeout = 5000 #for connecting to motor controller (ms)
 #assuming bottom of tube is at the bottom of the furnace
 h0 = 18 #intial height above the bottom
 h1 = h0-12 #final height above bottom (negative means out of furnace
-v = onecm*(h1-h0)/(3600*60) #steps per sec
+v = onecm*(h1-h0)/(3600*90) #steps per sec
+# v = onecm*(8)/(3600*60)
 #up is negative values
 #down is positive values
-wait_time = 11#hr
-# wait_time = 5/3600#hr
+wait_time = 45#hr
 
 parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
@@ -98,7 +98,7 @@ stepper0.setEngaged(False)
 print('Done')
 print('Traveled: ',str(stepper0.getPosition()/onecm)+'cm in',str((time.perf_counter()-t0)/3600)+'hours')
 now = datetime.now()
-print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
+print('Time is',now.strftime("%m/%d/%Y_%H:%M:%S"))
 
 #Close your Phidgets and files once the program is done.
 stepper0.close()
