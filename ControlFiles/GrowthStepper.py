@@ -17,21 +17,26 @@ def get_parameters(f):
     #May be smart to install a better fail safe, but this is probably good enough for most users.
 
 
-#stepper control parameters (do not change)
+#stepper control parameters (DO NOT CHANGE)
 StepsPerRev = 360/1.8*(204687/2057)*16 #200steps/rev*gear ratio*16microsteps #318,424.113
 cmperRev = 5.735
 onecm = StepsPerRev/cmperRev #this is the steps per 1 cm of motion (value is 55,522.949)
 timeout = 5000 #for connecting to motor controller (ms)
 
-#define speed and length for scan (change)
+
+
+#define speed and length for scan (CHANGE)
 #assuming bottom of tube is at the bottom of the furnace
-h0 = 18 #intial height above the bottom
-h1 = h0-12 #final height above bottom (negative means out of furnace
-v = onecm*(h1-h0)/(3600*90) #steps per sec
-# v = onecm*(8)/(3600*60)
+height_intial = 18 #intial height of the growth tube above the bottom of the metal shielding of the furnace
+lower_distance = 12
+lower_time = 90 #time to lower growth in hrs
+wait_time = 45#hr (waiting for furnace before lowering begins)
+
+height_final = height_intial-lower_distance  #final height above bottom at the end (negative means out of furnace)
+v = onecm*(height_final-height_intial)/(3600*lower_time) #units of steps per sec (sign matters!!)
 #up is negative values
 #down is positive values
-wait_time = 45#hr
+
 
 parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
@@ -64,11 +69,11 @@ stepper0.setVelocityLimit(int(speed))
 stepper0.setEngaged(True)
 stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current position to zero
 print('Starting Intial posisiton',pos)
-target = -abs(int(h0*onecm))#want to move up so negative height
+target = -abs(int(height_intial*onecm))#want to move up so negative height
 stepper0.setTargetPosition(target)
 #start lifting to intial height
 while (pos := stepper0.getPosition())> target:
-    print(str(round((pos)/int(h0*onecm)*100,1))+'%')
+    print(str(round((pos)/int(height_intial*onecm)*100,1))+'%')
     time.sleep(1)
     
 stepper0.setEngaged(False)
@@ -80,7 +85,7 @@ print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
-target = abs(int((h1-h0)*onecm)) #should be positive for lowering
+target = abs(int((height_final-height_intial)*onecm)) #should be positive for lowering
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
 stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#this gives a measured rate of 8/16 steps per sec
