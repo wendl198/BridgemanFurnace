@@ -27,10 +27,10 @@ timeout = 5000 #for connecting to motor controller (ms)
 
 #define speed and length for scan (CHANGE)
 #assuming bottom of tube is at the bottom of the furnace
-height_intial = 18 #intial height of the growth tube above the bottom of the metal shielding of the furnace
-lower_distance = 12
-lower_time = 90 #time to lower growth in hrs
-wait_time = 45#hr (waiting for furnace before lowering begins)
+height_intial = 27.5 #intial height of the growth tube above the bottom of the metal shielding of the furnace
+lower_distance = 7.5
+lower_time = 85 #time to lower growth in hrs
+wait_time = 36#hr (waiting for furnace before lowering begins)
 
 height_final = height_intial-lower_distance  #final height above bottom at the end (negative means out of furnace)
 v = onecm*(height_final-height_intial)/(3600*lower_time) #units of steps per sec (sign matters!!)
