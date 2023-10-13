@@ -144,12 +144,13 @@ for i, video_path in enumerate(video_paths):
 
 #save file stuff
 save_path = "C:/Users/Contactless/Desktop/TempVideos/GrowthTempData"
-save_file = open(save_path +'/'+ video_paths[0].split('.')[0] + ".dat", "a")
+save_file = open(save_path +'/'+ video_paths[0].split('.')[0] + ".dat", "w")
 save_file.write("Time (min)" + "\t" 'Temp (C)'+'\t'+"\n")
 for i in range(len(times)):
     for j in range(len(times[i])):
-        save_file.write(times[i][j]+(start_times[i]-start_times[0])/60,temps[i][j])
+        save_file.write(str(times[i][j]+(start_times[i]-start_times[0])/60)+ "\t"+str(temps[i][j])+'\n')
 save_file.close()
+
 #plot temp v time
 fig1 = plt.figure(constrained_layout = True)
 ax = fig1.add_subplot(1, 1, 1)
