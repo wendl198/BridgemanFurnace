@@ -53,7 +53,7 @@ def main(video_path):
         # print(text,timestamp)
         if len(data) == 0:
             data.append([timestamp, text])
-        elif text != data[-1][1]:#filters out repeated points
+        elif text != data[-1][1]:#only include changes
             if text == 0 and len(data)>1:
                 data.append([timestamp, data[-1][1]])
             else:
@@ -88,7 +88,8 @@ def get_pixels(img):
             output[4] = img[pixel[1]][pixel[0]]
     return tuple(output[0]),tuple(output[1]),tuple(output[2]),tuple(output[3]),output[4]
 
-folderpath = "C:/Users/Contactless/Desktop/TempVideos/GrowthTemp"
+folderpath = "C:/Users/Contactless/Desktop/TempVideos/New_Videos"
+folderpath = "C:/Users/Contactless/Desktop/TempVideos/Old_Videos/Constant300"
 video_paths = os.listdir(folderpath)
 
 #check for success
@@ -139,11 +140,11 @@ for i, video_path in enumerate(video_paths):
     times[i] = np.array(times[i])
 
     #remove outliers
-    for j in range(len(temps)-5):
-        avg1 = np.average([temps[i][j],temps[i][j+1]])
-        avg2 = np.average([temps[i][j+3],temps[i][j+4]])
-        if temps[i][j+2]<min(avg1,avg2)*.975 or temps[i][j+2]>max(avg1,avg2)*1.025:
-            temps[i][j+2] = np.average([avg1,avg2])
+    #for j in range(len(temps)-5):
+    #    avg1 = np.average([temps[i][j],temps[i][j+1]])
+    #    avg2 = np.average([temps[i][j+3],temps[i][j+4]])
+    #    if temps[i][j+2]<min(avg1,avg2)*.975 or temps[i][j+2]>max(avg1,avg2)*1.025:
+    #        temps[i][j+2] = np.average([avg1,avg2])
 
 
 #save file stuff
