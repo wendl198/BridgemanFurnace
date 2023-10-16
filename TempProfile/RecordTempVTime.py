@@ -48,13 +48,16 @@ def main(video_path):
         if not ret:
             break
         
-        text = extract_text_from_frame(frame,thres)
+        text = extract_text_from_frame(frame,thres) #returned as a float
         timestamp = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
         # print(text,timestamp)
-        if text == 0 and len(data)>1:
-            data.append([timestamp, data[-1][1]])
-        else:
+        if len(data) == 0:
             data.append([timestamp, text])
+        elif text != data[-1][1]:#filters out repeated points
+            if text == 0 and len(data)>1:
+                data.append([timestamp, data[-1][1]])
+            else:
+                data.append([timestamp, text])
     
     cap.release()
     
@@ -141,6 +144,7 @@ for i, video_path in enumerate(video_paths):
         avg2 = np.average([temps[i][j+3],temps[i][j+4]])
         if temps[i][j+2]<min(avg1,avg2)*.975 or temps[i][j+2]>max(avg1,avg2)*1.025:
             temps[i][j+2] = np.average([avg1,avg2])
+
 
 #save file stuff
 save_path = "C:/Users/Contactless/Desktop/TempVideos/GrowthTempData"
