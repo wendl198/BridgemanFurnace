@@ -30,6 +30,10 @@ This is a git repository that can be used to update the files that you want to r
 git pull 
 (be sure you are in the relavent path from above)
 
+Adjust your sample's original height by running
+python3 QuickStop.py
+This will allow you to move it up and down using the buttons that are attached to the pi.
+
 Now you should be able to run the newest version of your script e.g.:
 python3 GrowthStepper.py
 
