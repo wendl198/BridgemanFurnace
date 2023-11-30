@@ -32,7 +32,7 @@ git pull
 
 Adjust your sample's original height by running
 python3 QuickStop.py
-This will allow you to move it up and down using the buttons that are attached to the pi.
+This will allow you to move it up and down using the buttons that are attached to the pi. To stop this program press "ctrl c" in the terminal
 
 Now you should be able to run the newest version of your script e.g.:
 python3 GrowthStepper.py
