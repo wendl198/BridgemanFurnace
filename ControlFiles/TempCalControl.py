@@ -39,7 +39,7 @@ timeout = 5000 #for connecting to motor controller (ms)
 #Above the bottom of the furnace is positive
 height_initial = 2.39 #intial height of the growth tube above the bottom of the aluminia tube
 lower_distance = -30 #positive number lowers, neg raises
-lower_time = 3 #time to lower growth in hrs
+lower_time = 2 #time to lower growth in hrs
 
 
 height_final = height_initial-lower_distance  #final height above bottom at the end (negative means out of furnace)
