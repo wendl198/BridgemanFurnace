@@ -10,3 +10,11 @@ rm: remove
 cp: copy
 scp: secure copy (ssh copy)
 man thingthatyouarecuriousabout
+
+note, when setting up again, I had to use 
+sudo pip install Phidget22 --break-system-packages
+instead of 
+sudo pip install Phidget22
+It worked fine.
+
+Also getting python3.9 didn't work, but I think when pip was installed, the newest version (pyhton3.11) was installed instead.
