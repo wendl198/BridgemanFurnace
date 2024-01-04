@@ -1,3 +1,4 @@
+#this file is antequated. Use TempCalControl.py in BridgemanFurnace/ControlFiles instead
 from Phidget22.Phidget import *
 from Phidget22.Devices.Stepper import *
 from Phidget22.Devices.DigitalInput import *
