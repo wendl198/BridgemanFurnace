@@ -15,7 +15,17 @@ def get_parameters(f):
         time.sleep(1)
         return get_parameters(f) #this will recursively tunnel deeper until the problem is fixed. It will not record data
     #May be smart to install a better fail safe, but this is probably good enough for most users.
-
+def still_moving(pos,target,v):
+    if v > 0: #moving down
+        if target > pos:
+            return True
+        else:
+            return False
+    elif v < 0: #moving up
+        if target < pos:
+            return True
+        else:
+            return False
 
 #stepper control parameters (DO NOT CHANGE)
 StepsPerRev = 360/1.8*(204687/2057)*16 #200steps/rev*gear ratio*16microsteps #318,424.113
@@ -28,15 +38,16 @@ timeout = 5000 #for connecting to motor controller (ms)
 #define speed and length for scan (CHANGE)
 #Above the bottom of the furnace is positive
 height_initial = 2.39 #intial height of the growth tube above the bottom of the aluminia tube
-lower_distance = -30 positive number lowers, neg raises
+lower_distance = -30 #positive number lowers, neg raises
 lower_time = 3 #time to lower growth in hrs
 wait_time = 0#hr (waiting for furnace before lowering begins)
 
 
-height_final = height_intial-lower_distance  #final height above bottom at the end (negative means out of furnace)
+height_final = height_initial-lower_distance  #final height above bottom at the end (negative means out of furnace)
 v = onecm*(height_final-height_initial)/(3600*lower_time) #units of steps per sec (sign matters!!)
 #up is negative values
 #down is positive values
+#this is opposite as of what is intuitive: steps is proportional to negative height
 
 parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
@@ -73,19 +84,22 @@ stepper0.setTargetPosition(0)
 stepper0.setVelocityLimit(int(speed))
 stepper0.setEngaged(True)
 stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current position to zero
-print('Starting Intial posisiton',pos)
-target = -abs(int(height_intial*onecm))#want to move up so negative height
-stepper0.setTargetPosition(target)
-#start lifting to intial height
-while (pos := stepper0.getPosition())> target:
-    print(str(round((pos)/int(height_initial*onecm)*100,1))+'%')
-    time.sleep(1)
-    
-stepper0.setEngaged(False)
-print('Top posisiton',stepper0.getPosition()/onecm)
-print('Waiting for heating')#wait for heating up
-time.sleep(wait_time*3600)
 stepper0.setAcceleration(4000)#slowest acceleration
+
+# print('Starting Intial posisiton',pos)
+# target = -abs(int(height_initial*onecm))#want to move up so negative height
+# stepper0.setTargetPosition(target)
+# #start lifting to intial height
+# while (pos := stepper0.getPosition())> target:
+#     print(str(round((pos)/int(height_initial*onecm)*100,1))+'%')
+#     time.sleep(1)
+    
+# stepper0.setEngaged(False)
+# print('Top posisiton',stepper0.getPosition()/onecm)
+# print('Waiting for heating')#wait for heating up
+# time.sleep(wait_time*3600)
+
+
 print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
@@ -97,13 +111,12 @@ stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#5 gives a measured rate of 8/16 
 stepper0.addPositionOffset(-stepper0.getPosition()) 
 
 #start final lowering                       
-while ((pos := stepper0.getPosition()) < target or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
-    # print(pos)
+while (still_moving((pos := stepper0.getPosition()),target,v) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     if reset:
         reset =False
         t0 = time.perf_counter()
-    stepper0.setTargetPosition(int((time.perf_counter()-t0)*v))#use absolute value to ensure positive thus down
-    save_file.write(str((time.perf_counter()-t0)/60) + "\t" +  str(p := stepper0.getPosition())+'\t' + str(height_inital+p/onecm)+"\n")
+    stepper0.setTargetPosition(int((time.perf_counter()-t0)*v))
+    save_file.write(str((time.perf_counter()-t0)/60) + "\t" +  str(pos)+'\t' + str(height_initial-pos/onecm)+"\n")
     save_file.flush()#this will save the data without closing the file
     time.sleep(1)
     
