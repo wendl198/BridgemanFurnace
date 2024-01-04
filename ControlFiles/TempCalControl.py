@@ -39,8 +39,7 @@ timeout = 5000 #for connecting to motor controller (ms)
 #Above the bottom of the furnace is positive
 height_initial = 2.39 #intial height of the growth tube above the bottom of the aluminia tube
 lower_distance = -30 #positive number lowers, neg raises
-lower_time = .2 #time to lower growth in hrs
-wait_time = 0#hr (waiting for furnace before lowering begins)
+lower_time = 3 #time to lower growth in hrs
 
 
 height_final = height_initial-lower_distance  #final height above bottom at the end (negative means out of furnace)
@@ -57,13 +56,13 @@ save_path = ''
 save_file = open('C:\\Users\\Contactless\\Desktop\\Stepper\\RawData\\Stepper'+dt_string+'.dat', "a")#leave file open
 save_file.write("Time (min)" + "\t" + 'Position(1/16 steps)'+ '\t' + 'x (cm)' + "\n")#set header
 
-    #Create your Phidget channels
+#Create your Phidget channels
 stepper0 = Stepper()
 digitalInput1 = DigitalInput()
 digitalInput2 = DigitalInput()
 digitalInput3 = DigitalInput()
 
-    #Set addressing parameters to specify which channel to open (if any)
+#Set addressing parameters to specify which channel to open (if any)
 digitalInput1.setChannel(1)
 digitalInput2.setChannel(2)
 digitalInput3.setChannel(3)
@@ -84,7 +83,7 @@ stepper0.setTargetPosition(0)
 stepper0.setVelocityLimit(int(speed))
 stepper0.setEngaged(True)
 stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current position to zero
-#stepper0.setAcceleration(4000)#slowest acceleration
+stepper0.setAcceleration(4000)#slowest acceleration
 
 
 print('Beginning moving')
@@ -94,10 +93,10 @@ reset = True
 target = -int((height_final-height_initial)*onecm)
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#5 gives a measured rate of 8/16 steps per sec
+stepper0.setVelocityLimit(max(5,int(abs(v)+1))) #5 gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
 
-#start final lowering                       
+#start moving                      
 while (still_moving((pos := stepper0.getPosition()),target,v) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     if reset:
         reset = False
