@@ -26,20 +26,25 @@ timeout = 5000 #for connecting to motor controller (ms)
 
 
 #define speed and length for scan (CHANGE)
-#assuming bottom of tube is at the bottom of the furnace
-height_intial = 0 #intial height of the growth tube above the bottom of the metal shielding of the furnace
-lower_distance = -30 #negative means it rises
+#Above the bottom of the furnace is positive
+height_initial = 2.39 #intial height of the growth tube above the bottom of the aluminia tube
+lower_distance = -30 positive number lowers, neg raises
 lower_time = 3 #time to lower growth in hrs
 wait_time = 0#hr (waiting for furnace before lowering begins)
 
 
 height_final = height_intial-lower_distance  #final height above bottom at the end (negative means out of furnace)
-v = onecm*(height_final-height_intial)/(3600*lower_time) #units of steps per sec (sign matters!!)
+v = onecm*(height_final-height_initial)/(3600*lower_time) #units of steps per sec (sign matters!!)
 #up is negative values
 #down is positive values
 
 parameter_path = 'StepperParameters.txt'
 parameter_file = open(parameter_path, 'r')
+now = datetime.now()
+dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")#get unique name
+save_path = ''
+save_file = open('C:\\Users\\Contactless\\Desktop\\Stepper\\RawData\\Stepper'+dt_string+'.dat', "a")#leave file open
+save_file.write("Time (min)" + "\t" + 'Position(1/16 steps)'+ '\t' + 'x (cm)' + "\n")#set header
 
     #Create your Phidget channels
 stepper0 = Stepper()
@@ -73,7 +78,7 @@ target = -abs(int(height_intial*onecm))#want to move up so negative height
 stepper0.setTargetPosition(target)
 #start lifting to intial height
 while (pos := stepper0.getPosition())> target:
-    print(str(round((pos)/int(height_intial*onecm)*100,1))+'%')
+    print(str(round((pos)/int(height_initial*onecm)*100,1))+'%')
     time.sleep(1)
     
 stepper0.setEngaged(False)
@@ -85,18 +90,21 @@ print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
-target = abs(int((height_final-height_intial)*onecm)) #should be positive for lowering
+target = int((height_final-height_initial)*onecm)
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
-stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#this gives a measured rate of 8/16 steps per sec
+stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#5 gives a measured rate of 8/16 steps per sec
 stepper0.addPositionOffset(-stepper0.getPosition()) 
-#start lowering from intial height                       
+
+#start final lowering                       
 while ((pos := stepper0.getPosition()) < target or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     # print(pos)
     if reset:
         reset =False
         t0 = time.perf_counter()
-    stepper0.setTargetPosition(abs(int((time.perf_counter()-t0)*v)))#use absolute value to ensure positive thus down
+    stepper0.setTargetPosition(int((time.perf_counter()-t0)*v))#use absolute value to ensure positive thus down
+    save_file.write(str((time.perf_counter()-t0)/60) + "\t" +  str(p := stepper0.getPosition())+'\t' + str(height_inital+p/onecm)+"\n")
+    save_file.flush()#this will save the data without closing the file
     time.sleep(1)
     
 stepper0.setEngaged(False)    
@@ -112,3 +120,4 @@ digitalInput2.close()
 digitalInput3.close()
 print('Stepper Closed')
 parameter_file.close()
+save_file.close()
