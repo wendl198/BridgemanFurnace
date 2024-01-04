@@ -53,7 +53,7 @@ parameter_file = open(parameter_path, 'r')
 now = datetime.now()
 dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")#get unique name
 save_path = ''
-save_file = open('C:\\Users\\Contactless\\Desktop\\Stepper\\RawData\\Stepper'+dt_string+'.dat', "a")#leave file open
+save_file = open('BridgemanFurnace/RawData/Stepper'+dt_string+'.dat', "a")#leave file open
 save_file.write("Time (min)" + "\t" + 'Position(1/16 steps)'+ '\t' + 'x (cm)' + "\n")#set header
 
 #Create your Phidget channels
