@@ -44,7 +44,7 @@ wait_time = 0#hr (waiting for furnace before lowering begins)
 
 
 height_final = height_initial-lower_distance  #final height above bottom at the end (negative means out of furnace)
-v = onecm*(height_final-height_initial)/(3600*lower_time) #units of steps per sec (sign matters!!)
+v = -onecm*(height_final-height_initial)/(3600*lower_time) #units of steps per sec (sign matters!!)
 #up is negative values
 #down is positive values
 #this is opposite as of what is intuitive: steps is proportional to negative height
@@ -84,27 +84,14 @@ stepper0.setTargetPosition(0)
 stepper0.setVelocityLimit(int(speed))
 stepper0.setEngaged(True)
 stepper0.addPositionOffset(-(pos :=stepper0.getPosition()))#sets current position to zero
-stepper0.setAcceleration(4000)#slowest acceleration
-
-# print('Starting Intial posisiton',pos)
-# target = -abs(int(height_initial*onecm))#want to move up so negative height
-# stepper0.setTargetPosition(target)
-# #start lifting to intial height
-# while (pos := stepper0.getPosition())> target:
-#     print(str(round((pos)/int(height_initial*onecm)*100,1))+'%')
-#     time.sleep(1)
-    
-# stepper0.setEngaged(False)
-# print('Top posisiton',stepper0.getPosition()/onecm)
-# print('Waiting for heating')#wait for heating up
-# time.sleep(wait_time*3600)
+#stepper0.setAcceleration(4000)#slowest acceleration
 
 
 print('Beginning moving')
 now = datetime.now()
 print('Time is',now.strftime("%d/%m/%Y_%H:%M:%S"))
 reset = True
-target = int((height_final-height_initial)*onecm)
+target = -int((height_final-height_initial)*onecm)
 stepper0.setTargetPosition(stepper0.getPosition())
 stepper0.setEngaged(True)
 stepper0.setVelocityLimit(max(5,int(abs(v)+1)))#5 gives a measured rate of 8/16 steps per sec
@@ -113,7 +100,7 @@ stepper0.addPositionOffset(-stepper0.getPosition())
 #start final lowering                       
 while (still_moving((pos := stepper0.getPosition()),target,v) or reset) and not(digitalInput2.getState() and digitalInput3.getState()):
     if reset:
-        reset =False
+        reset = False
         t0 = time.perf_counter()
     stepper0.setTargetPosition(int((time.perf_counter()-t0)*v))
     save_file.write(str((time.perf_counter()-t0)/60) + "\t" +  str(pos)+'\t' + str(height_initial-pos/onecm)+"\n")
