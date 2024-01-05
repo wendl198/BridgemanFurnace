@@ -18,3 +18,6 @@ sudo pip install Phidget22
 It worked fine.
 
 Also getting python3.9 didn't work, but I think when pip was installed, the newest version (pyhton3.11) was installed instead.
+
+moving data command:
+scp blake@pi.local:BridgemanFurnace/RawData/Stepper04_01_2024_16_00_01.dat \Users\blake\Documents\VSCode\Python\Greven\RawData\VideoTemps\Cal2\PosData
