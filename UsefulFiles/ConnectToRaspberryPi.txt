@@ -2,7 +2,7 @@ The easiest way to connect to the raspberrypi is an SSH connection. eduroam wifi
 
 If you need to set up the pi (or reset), see the SetupPi.sh shell script file and SetupPi.txt.
 
-The pi is configured to look for a network with the following properties:
+The pi is configured to look for a network with the following properties (make a hotspot on the relevant device with the properties):
 SSID (Network Name): StepperWifi
 Password: mercury1201
 
