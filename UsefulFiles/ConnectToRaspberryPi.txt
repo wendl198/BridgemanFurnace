@@ -6,7 +6,7 @@ The pi is configured to look for a network with the following properties:
 SSID (Network Name): StepperWifi
 Password: mercury1201
 
- Make a hotspot on the relevant device with the above network properties. Note, the Raspberry Pi 3, can only connect via 2.4 GHz wifi connection.
+ Make a hotspot on the relevant device with the above network properties. Note, the Raspberry Pi 3, can only connect via 2.4 GHz wifi connection. If the pi is not connecting, unplugging and replugging the power usually fixes lack of connectivity.
 
 Other pi configuration properties:
 Hostname: pi.local
